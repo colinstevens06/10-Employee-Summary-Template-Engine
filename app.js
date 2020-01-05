@@ -1,5 +1,10 @@
 const fs = require("fs");
 const inquirer = require("inquirer");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
+const Manager = require("./lib/Manager");
+
+let employeeID = 1;
 
 function managerPrompts() {
    inquirer
@@ -8,11 +13,6 @@ function managerPrompts() {
             type: "input",
             message: "Manager name: ",
             name: "managerName"
-         },
-         {
-            type: "input",
-            message: "What is your employee ID?",
-            name: "managerID"
          },
          {
             type: "input",
@@ -30,8 +30,26 @@ function managerPrompts() {
          let managerID = response.managerID;
          let managerEmail = response.managerEmail;
          let managerOffice = response.managerOffice;
+         let manager = new Manager(
+            managerName,
+            managerID,
+            managerEmail,
+            managerOffice
+         );
 
-         console.log(managerName);
+         employeeID++;
+
+         console.log(manager);
+
+         console.log(`
+         ~~~~~~~~~~~~~~
+
+         Now we'll collect information from you about your employees
+
+         ~~~~~~~~~~~~~~
+         `);
+
+         employeePrompts();
       });
 }
 
@@ -46,8 +64,8 @@ function employeePrompts() {
          },
          {
             type: "input",
-            message: "What is the employee's ID number?",
-            name: "employeeID"
+            message: "What is the employee's name?",
+            name: "employeeName"
          },
          {
             type: "input",
@@ -57,28 +75,62 @@ function employeePrompts() {
       ])
       .then(function(response) {
          let employeeType = response.employeeType;
-         let employeeID = response.employeeID;
+         let employeeName = response.employeeName;
          let employeeEmail = response.employeeEmail;
 
          if (employeeType === "Engineer") {
-            inquirer.prompt([
-               {
-                  type: "input",
-                  message: "What is your employee's GitHub username?",
-                  name: "gitHubUN"
-               }
-            ]);
+            inquirer
+               .prompt([
+                  {
+                     type: "input",
+                     message: "What is your employee's GitHub username?",
+                     name: "gitHubUN"
+                  },
+                  {
+                     type: "list",
+                     message: "Do you have more employees you'd like to add?",
+                     choices: ["Yes", "No"],
+                     name: "moreEmployees"
+                  }
+               ])
+               .then(function(response) {
+                  let employeeGitHub = response.gitHubUN;
+
+                  if (response.moreEmployees === "Yes") {
+                     employeePrompts();
+                  } else {
+                     return;
+                  }
+
+                  let 
+               });
          } else {
-            inquirer.prompt([
-               {
-                  type: "input",
-                  message: "Where does the intern go to school?",
-                  name: "internSchool"
-               }
-            ]);
+            inquirer
+               .prompt([
+                  {
+                     type: "input",
+                     message: "Where does the intern go to school?",
+                     name: "internSchool"
+                  },
+                  {
+                     type: "list",
+                     message: "Do you have more employees you'd like to add?",
+                     choices: ["Yes", "No"],
+                     name: "moreEmployees"
+                  }
+               ])
+               .then(function(response) {
+                  if (response.moreEmployees === "Yes") {
+                     employeePrompts();
+                  } else {
+                     return;
+                  }
+               });
          }
       });
 }
+
+managerPrompts();
 
 // need to ask the manager for their information first
 // then ask for information about the first employee
