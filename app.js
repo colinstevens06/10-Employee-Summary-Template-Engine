@@ -3,6 +3,7 @@ const inquirer = require("inquirer");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
+const cards = require("./templates/Cards");
 
 let employeeID = 1;
 let employeeList = [];
@@ -28,7 +29,6 @@ function managerPrompts() {
       ])
       .then(function(response) {
          let managerName = response.managerName;
-         let managerID = response.managerID;
          let managerEmail = response.managerEmail;
          let managerOffice = response.managerOffice;
          let manager = new Manager(
@@ -38,6 +38,7 @@ function managerPrompts() {
             managerOffice
          );
 
+         console.log(manager.createCard());
          employeeID++;
 
          employeeList.push(manager);
