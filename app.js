@@ -5,6 +5,7 @@ const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
 
 let employeeID = 1;
+let employeeList = [];
 
 function managerPrompts() {
    inquirer
@@ -32,14 +33,14 @@ function managerPrompts() {
          let managerOffice = response.managerOffice;
          let manager = new Manager(
             managerName,
-            managerID,
+            employeeID,
             managerEmail,
             managerOffice
          );
 
          employeeID++;
 
-         console.log(manager);
+         employeeList.push(manager);
 
          console.log(`
          ~~~~~~~~~~~~~~
@@ -96,13 +97,21 @@ function employeePrompts() {
                .then(function(response) {
                   let employeeGitHub = response.gitHubUN;
 
+                  let engineer = new Engineer(
+                     employeeName,
+                     employeeID,
+                     employeeEmail,
+                     employeeGitHub
+                  );
+
+                  employeeList.push(engineer);
+                  employeeID++;
+
                   if (response.moreEmployees === "Yes") {
                      employeePrompts();
                   } else {
                      return;
                   }
-
-                  let 
                });
          } else {
             inquirer
@@ -120,6 +129,17 @@ function employeePrompts() {
                   }
                ])
                .then(function(response) {
+                  let employeeSchool = response.internSchool;
+
+                  let intern = new Intern(
+                     employeeName,
+                     employeeID,
+                     employeeEmail,
+                     employeeSchool
+                  );
+                  employeeList.push(intern);
+                  employeeID++;
+
                   if (response.moreEmployees === "Yes") {
                      employeePrompts();
                   } else {
@@ -128,11 +148,7 @@ function employeePrompts() {
                });
          }
       });
+   console.log(employeeList);
 }
 
 managerPrompts();
-
-// need to ask the manager for their information first
-// then ask for information about the first employee
-// then ask 'do you want to enter another employee?
-// if yes, you run the promps again - so I want to put the employee questions and conditionals in a function that I can call
